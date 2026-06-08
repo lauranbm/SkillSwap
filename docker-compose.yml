@@ -1,0 +1,34 @@
+# Define os serviços que serão executados pelo Docker
+services:
+
+  # Serviço do banco de dados MySQL
+  mysql:
+    # Imagem oficial do MySQL na versão 8
+    image: mysql:8.0
+
+    # Nome do container que aparecerá no Docker Desktop
+    container_name: skillswap-mysql
+
+    # Faz o container reiniciar automaticamente se ele parar
+    restart: always
+
+    # Variáveis de configuração inicial do MySQL
+    environment:
+      # Senha do usuário root do banco
+      MYSQL_ROOT_PASSWORD: root
+
+      # Nome do banco que será criado automaticamente
+      MYSQL_DATABASE: skillswap_db
+
+    # Mapeia a porta do container para o computador
+    # localhost:3306 -> MySQL dentro do Docker
+    ports:
+      - "3306:3306"
+
+    # Salva os dados do banco mesmo se o container for desligado
+    volumes:
+      - skillswap_mysql_data:/var/lib/mysql
+
+# Volume usado para persistir os dados do MySQL
+volumes:
+  skillswap_mysql_data:
