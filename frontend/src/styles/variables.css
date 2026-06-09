@@ -1,0 +1,9 @@
+:root {
+  --color-primary: #7C3AED;      /* roxo principal - botões, destaques */
+  --color-primary-light: #EDE9FE; /*fundo lilás claro dos cards */
+  --color-text: #1a1a1a;          /*texto principal*/
+  --color-text-muted: #6b7280;    /*texto secundário/cinza*/
+  --color-background: #f9f9f9;    /*fundo geral*/
+  --color-white: #ffffff;
+  --border-radius: 12px;          /*arredondamento padrão*/
+}
