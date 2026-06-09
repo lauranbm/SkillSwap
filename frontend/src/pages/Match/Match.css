@@ -1,0 +1,119 @@
+.match-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--color-primary); /* fundo roxo */
+  padding: 48px 32px;
+  gap: 32px;
+}
+
+/* Título principal */
+.match-titulo {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-white);
+  text-align: center;
+}
+
+.match-subtitulo {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.8); /* branco com leve transparência */
+  text-align: center;
+  margin-top: -24px; /* aproxima do título */
+}
+
+/* Bloco com as duas fotos e o ícone no meio */
+.match-avatares {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.match-pessoa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.match-foto {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  border: 3px solid white; /* borda branca ao redor da foto */
+}
+
+.match-pessoa-nome {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+.match-pessoa-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: -8px;
+}
+
+.match-pessoa-skill {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+/* Ícone de estrela/match entre os dois avatares */
+.match-icone {
+  font-size: 28px;
+  margin-bottom: 40px; /* alinha verticalmente com as fotos */
+}
+
+/* Botões */
+.match-botoes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Botão principal - branco */
+.match-botao-principal {
+  width: 100%;
+  padding: 16px;
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.match-botao-principal:hover {
+  opacity: 0.9;
+}
+
+/* Botão secundário - transparente com borda branca */
+.match-botao-secundario {
+  width: 100%;
+  padding: 16px;
+  background-color: transparent;
+  color: var(--color-white);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.match-botao-secundario:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}

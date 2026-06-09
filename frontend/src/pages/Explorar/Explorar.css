@@ -1,0 +1,153 @@
+.explorar-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding-bottom: 80px; /* espaço para a navbar */
+}
+
+/* Cabeçalho */
+.explorar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 48px 24px 16px;
+  background-color: var(--color-white);
+}
+
+.explorar-header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.explorar-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Campo de busca */
+.explorar-busca {
+  padding: 16px 24px;
+  background-color: var(--color-white);
+}
+
+.explorar-busca input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  outline: none;
+  color: var(--color-text);
+}
+
+.explorar-busca input:focus {
+  border-color: var(--color-primary);
+}
+
+/* Filtros de categoria */
+.explorar-filtros {
+  display: flex;
+  gap: 8px;
+  padding: 16px 24px;
+  overflow-x: auto; /* scroll horizontal se tiver muitos filtros */
+  background-color: var(--color-white);
+}
+
+/* Remove a scrollbar visível nos filtros */
+.explorar-filtros::-webkit-scrollbar {
+  display: none;
+}
+
+.filtro-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1.5px solid #e5e7eb;
+  background-color: var(--color-white);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  white-space: nowrap; /* impede quebra de linha */
+  transition: all 0.2s;
+}
+
+/* Filtro selecionado fica roxo */
+.filtro-btn.ativo {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+/* Grid de categorias */
+.explorar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 colunas iguais */
+  gap: 16px;
+  padding: 24px;
+}
+
+/* Card de categoria */
+.categoria-card {
+  background-color: var(--color-white);
+  border-radius: var(--border-radius);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.categoria-card:hover {
+  transform: scale(1.02); /* leve zoom ao passar o mouse */
+}
+
+.categoria-icone {
+  font-size: 28px;
+}
+
+.categoria-card h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.categoria-card span {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* Navbar inferior - igual à Home */
+.explorar-navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--color-white);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 12px 0 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.navbar-item {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.navbar-item.ativo {
+  color: var(--color-primary);
+}

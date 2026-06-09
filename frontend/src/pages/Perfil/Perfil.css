@@ -1,0 +1,189 @@
+.perfil-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding-bottom: 100px;
+}
+
+/* Botão voltar */
+.perfil-voltar {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--color-text);
+  padding: 48px 24px 0;
+  width: fit-content;
+}
+
+/* Bloco do topo: foto, nome, localização, nota */
+.perfil-topo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  background-color: var(--color-white);
+  gap: 8px;
+}
+
+.perfil-foto {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.perfil-nome {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.perfil-verificado {
+  font-size: 16px; /* ícone de verificado */
+}
+
+.perfil-localizacao {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.perfil-nota {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.perfil-bio {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.5;
+  padding: 0 8px;
+}
+
+/* Seções de skills e avaliações */
+.perfil-secao {
+  padding: 20px 24px 0;
+}
+
+.perfil-secao-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.perfil-secao-header h2 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.perfil-secao-header button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* Tags de skill (ex: "Inglês - Avançado") */
+.skills-lista {
+  display: flex;
+  flex-wrap: wrap; /* quebra linha se não couber */
+  gap: 8px;
+}
+
+.skill-tag {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.skill-tag span {
+  display: block;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+/* Card de avaliação */
+.avaliacao-card {
+  background-color: var(--color-white);
+  border-radius: var(--border-radius);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.avaliacao-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avaliacao-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #fde68a; /* amarelo claro */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.avaliacao-nome {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.avaliacao-nota {
+  font-size: 13px;
+  color: #f59e0b; /* amarelo da estrela */
+}
+
+.avaliacao-texto {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+/* Botão fixo no rodapé */
+.perfil-botao-fixo {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  padding: 16px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.perfil-botao-fixo:hover {
+  opacity: 0.85;
+}
