@@ -1,5 +1,6 @@
 package com.skillswap.service;
 
+import com.skillswap.dto.TrocaRespostaDTO;
 import com.skillswap.dto.TrocaDTO;
 import com.skillswap.model.Habilidade;
 import com.skillswap.model.Troca;
@@ -51,9 +52,12 @@ public class TrocaService {
         return trocaRepository.save(troca);
     }
 
-    // Retorna todas as trocas cadastradas
-    public List<Troca> listarTodas() {
-        return trocaRepository.findAll();
+    // Retorna todas as trocas cadastradas em formato de resposta
+    public List<TrocaRespostaDTO> listarTodas() {
+        return trocaRepository.findAll()
+                .stream()
+                .map(this::converterParaRespostaDTO)
+                .toList();
     }
 
     // Retorna as trocas criadas por um usuário
@@ -64,5 +68,30 @@ public class TrocaService {
     // Retorna as trocas recebidas por um usuário
     public List<Troca> listarPorDestinatario(Long destinatarioId) {
         return trocaRepository.findByDestinatarioId(destinatarioId);
+    }
+
+    // Método que atualiza o status da troca para ACEITA
+    public TrocaRespostaDTO aceitar(Long trocaId) {
+
+        Troca troca = trocaRepository.findById(trocaId)
+                .orElseThrow(() -> new RuntimeException("Troca não encontrada"));
+
+        troca.setStatus(StatusTroca.ACEITA);
+
+        Troca trocaAtualizada = trocaRepository.save(troca);
+
+        return converterParaRespostaDTO(trocaAtualizada);
+    }
+
+    // Método que converte uma entidade Troca em um DTO de resposta (public para que
+    // todos os endpoints usem o DTO - padroniza-los)
+    public TrocaRespostaDTO converterParaRespostaDTO(Troca troca) {
+        return new TrocaRespostaDTO(
+                troca.getId(),
+                troca.getSolicitante().getNome(),
+                troca.getDestinatario().getNome(),
+                troca.getHabilidadeOferecida().getTitulo(),
+                troca.getHabilidadeDesejada().getTitulo(),
+                troca.getStatus().name());
     }
 }

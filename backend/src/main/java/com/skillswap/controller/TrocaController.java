@@ -1,5 +1,6 @@
 package com.skillswap.controller;
 
+import com.skillswap.dto.TrocaRespostaDTO;
 import com.skillswap.dto.TrocaDTO;
 import com.skillswap.model.Troca;
 import com.skillswap.service.TrocaService;
@@ -21,9 +22,9 @@ public class TrocaController {
         return trocaService.criar(trocaDTO);
     }
 
-    // Retorna todas as trocas cadastradas
+    // Retorna todas as trocas cadastradas em formato simplificado
     @GetMapping
-    public List<Troca> listarTodas() {
+    public List<TrocaRespostaDTO> listarTodas() {
         return trocaService.listarTodas();
     }
 
@@ -37,5 +38,11 @@ public class TrocaController {
     @GetMapping("/destinatario/{destinatarioId}")
     public List<Troca> listarPorDestinatario(@PathVariable Long destinatarioId) {
         return trocaService.listarPorDestinatario(destinatarioId);
+    }
+
+    // Método que atualiza o status da troca para ACEITA
+    @PutMapping("/{trocaId}/aceitar")
+    public TrocaRespostaDTO aceitar(@PathVariable Long trocaId) {
+        return trocaService.aceitar(trocaId);
     }
 }

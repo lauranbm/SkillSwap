@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Classe responsável por transportar os dados necessários
- * para criar uma solicitação de troca.
+ * Classe responsável por por criar uma solicitação de troca.
  */
 @Getter
 @Setter
