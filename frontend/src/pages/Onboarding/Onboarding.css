@@ -1,0 +1,107 @@
+.onboarding-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 100vh;
+  padding: 48px 32px 40px;
+  background-color: var(--color-white);
+  position: relative;
+}
+
+/* Botão pular no canto superior direito */
+.onboarding-pular {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Área da ilustração */
+.onboarding-imagem {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.onboarding-imagem img {
+  max-width: 280px;
+  width: 100%;
+}
+
+/* Título e descrição */
+.onboarding-texto {
+  text-align: left;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.onboarding-texto h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.onboarding-texto p {
+  font-size: 15px;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* Rodapé: bolinhas + botão lado a lado */
+.onboarding-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Bolinhas */
+.onboarding-bolinhas {
+  display: flex;
+  gap: 8px;
+}
+
+.bolinha {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-primary-light);
+  display: block;
+  transition: background-color 0.3s;
+}
+
+/* Bolinha do slide atual fica roxa */
+.bolinha.ativa {
+  background-color: var(--color-primary);
+  width: 24px; /* fica alongada como no protótipo */
+  border-radius: 5px;
+}
+
+/* Botão circular com seta */
+.onboarding-botao {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.onboarding-botao:hover {
+  opacity: 0.85;
+}
