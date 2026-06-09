@@ -5,6 +5,7 @@ import com.skillswap.model.Usuario;
 import com.skillswap.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.skillswap.dto.UsuarioRespostaDTO;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class UsuarioService {
         Usuario usuario = new Usuario();
 
         usuario.setNome(usuarioDTO.getNome());
+        usuario.setTelefone(usuarioDTO.getTelefone());
         usuario.setEmail(usuarioDTO.getEmail());
         usuario.setSenha(usuarioDTO.getSenha());
         usuario.setCidade(usuarioDTO.getCidade());
@@ -28,8 +30,22 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    // Retorna todos os usuários cadastrados
-    public List<Usuario> listarTodos() {
-        return usuarioRepository.findAll();
+    // Retorna todos os usuários sem expor a senha
+    public List<UsuarioRespostaDTO> listarTodos() {
+        return usuarioRepository.findAll()
+                .stream()
+                .map(this::converterParaRespostaDTO)
+                .toList();
+    }
+
+    // Converte uma entidade Usuario em um DTO de resposta (para evitar expor senha)
+    public UsuarioRespostaDTO converterParaRespostaDTO(Usuario usuario) {
+        return new UsuarioRespostaDTO(
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getCidade(),
+                usuario.getBio(),
+                usuario.getTelefone());
     }
 }

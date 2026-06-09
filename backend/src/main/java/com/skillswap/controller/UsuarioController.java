@@ -5,6 +5,7 @@ import com.skillswap.model.Usuario;
 import com.skillswap.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.skillswap.dto.UsuarioRespostaDTO;
 
 import java.util.List;
 
@@ -21,9 +22,9 @@ public class UsuarioController {
         return usuarioService.salvar(usuarioDTO);
     }
 
-    // Retorna todos os usuários cadastrados
+    // Retorna todos os usuários cadastrados sem expor a senha
     @GetMapping
-    public List<Usuario> listarTodos() {
+    public List<UsuarioRespostaDTO> listarTodos() {
         return usuarioService.listarTodos();
     }
 }

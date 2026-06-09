@@ -5,26 +5,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/*
- * Classe responsável por transportar os dados do usuário
- * entre as camadas da aplicação e as requisições da API.
+/**
+ * Classe responsável por transportar os dados de um usuário
+ * nas respostas da API, sem expor dados sensíveis (Ex: senha)
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioDTO {
+public class UsuarioRespostaDTO {
 
-    // Nome do usuário
+    private Long id;
+
     private String nome;
-
-    private String telefone;
 
     private String email;
 
-    private String senha;
-    
     private String cidade;
 
     private String bio;
+    
+    private String telefone;
 }

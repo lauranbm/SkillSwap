@@ -20,6 +20,8 @@ public class Usuario {
 
     private String nome;
 
+    private String telefone;
+    
     @Column(unique = true)
     private String email;
 
