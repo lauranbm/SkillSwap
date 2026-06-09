@@ -27,7 +27,7 @@ public class TrocaService {
     private HabilidadeRepository habilidadeRepository;
 
     // Cria uma solicitação de troca com status inicial pendente
-    public Troca criar(TrocaDTO trocaDTO) {
+    public TrocaRespostaDTO criar(TrocaDTO trocaDTO) {
 
         Usuario solicitante = usuarioRepository.findById(trocaDTO.getSolicitanteId())
                 .orElseThrow(() -> new RuntimeException("Solicitante não encontrado"));
@@ -49,7 +49,9 @@ public class TrocaService {
         troca.setHabilidadeDesejada(habilidadeDesejada);
         troca.setStatus(StatusTroca.PENDENTE);
 
-        return trocaRepository.save(troca);
+        Troca trocaSalva = trocaRepository.save(troca);
+
+        return converterParaRespostaDTO(trocaSalva);
     }
 
     // Retorna todas as trocas cadastradas em formato de resposta
@@ -73,8 +75,11 @@ public class TrocaService {
     // Método que atualiza o status da troca para ACEITA
     public TrocaRespostaDTO aceitar(Long trocaId) {
 
-        Troca troca = trocaRepository.findById(trocaId)
-                .orElseThrow(() -> new RuntimeException("Troca não encontrada"));
+        Troca troca = buscarTrocaPorId(trocaId);
+        // Garante que só trocas PENDENTES podem ser aceitas
+        if (troca.getStatus() != StatusTroca.PENDENTE) {
+            throw new RuntimeException("Apenas trocas pendentes podem ser aceitas");
+        }
 
         troca.setStatus(StatusTroca.ACEITA);
 
@@ -93,5 +98,43 @@ public class TrocaService {
                 troca.getHabilidadeOferecida().getTitulo(),
                 troca.getHabilidadeDesejada().getTitulo(),
                 troca.getStatus().name());
+    }
+
+    // Atualiza o status da troca para RECUSADA
+    public TrocaRespostaDTO recusar(Long trocaId) {
+
+        Troca troca = buscarTrocaPorId(trocaId);
+        // Garante que apenas trocas pendentes possam ser recusadas
+        if (troca.getStatus() != StatusTroca.PENDENTE) {
+            throw new RuntimeException("Apenas trocas pendentes podem ser recusadas");
+        }
+
+        troca.setStatus(StatusTroca.RECUSADA);
+
+        Troca trocaAtualizada = trocaRepository.save(troca);
+
+        return converterParaRespostaDTO(trocaAtualizada);
+    }
+
+    // Atualiza o status da troca para CONCLUIDA
+    public TrocaRespostaDTO concluir(Long trocaId) {
+
+        Troca troca = buscarTrocaPorId(trocaId);
+        // Garante que apenas trocas com status ACEITA sejam concluidas
+        if (troca.getStatus() != StatusTroca.ACEITA) {
+            throw new RuntimeException("Apenas trocas aceitas podem ser concluídas");
+        }
+
+        troca.setStatus(StatusTroca.CONCLUIDA);
+
+        Troca trocaAtualizada = trocaRepository.save(troca);
+
+        return converterParaRespostaDTO(trocaAtualizada);
+    }
+
+    // Busca uma troca pelo id informado (evita repetição)
+    private Troca buscarTrocaPorId(Long trocaId) {
+        return trocaRepository.findById(trocaId)
+                .orElseThrow(() -> new RuntimeException("Troca não encontrada"));
     }
 }

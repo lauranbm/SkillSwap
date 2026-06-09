@@ -18,7 +18,7 @@ public class TrocaController {
 
     // Cria uma nova solicitação de troca
     @PostMapping
-    public Troca criar(@RequestBody TrocaDTO trocaDTO) {
+    public TrocaRespostaDTO criar(@RequestBody TrocaDTO trocaDTO) {
         return trocaService.criar(trocaDTO);
     }
 
@@ -44,5 +44,17 @@ public class TrocaController {
     @PutMapping("/{trocaId}/aceitar")
     public TrocaRespostaDTO aceitar(@PathVariable Long trocaId) {
         return trocaService.aceitar(trocaId);
+    }
+
+    // Atualiza o status da troca para RECUSADA
+    @PutMapping("/{trocaId}/recusar")
+    public TrocaRespostaDTO recusar(@PathVariable Long trocaId) {
+        return trocaService.recusar(trocaId);
+    }
+
+    // Atualiza o status da troca para CONCLUIDA
+    @PutMapping("/{trocaId}/concluir")
+    public TrocaRespostaDTO concluir(@PathVariable Long trocaId) {
+        return trocaService.concluir(trocaId);
     }
 }
