@@ -19,11 +19,12 @@ public class UsuarioRespostaDTO {
 
     private String nome;
 
+    private String telefone;
+
     private String email;
 
     private String cidade;
 
     private String bio;
     
-    private String telefone;
 }

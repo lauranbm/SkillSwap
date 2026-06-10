@@ -18,8 +18,9 @@ public class UsuarioController {
 
     // Cadastra um novo usuário a partir dos dados recebidos na requisição
     @PostMapping
-    public Usuario salvar(@RequestBody UsuarioDTO usuarioDTO) {
-        return usuarioService.salvar(usuarioDTO);
+    public UsuarioRespostaDTO salvar(@RequestBody UsuarioDTO usuarioDTO) {
+        Usuario usuario = usuarioService.salvar(usuarioDTO);
+        return usuarioService.converterParaRespostaDTO(usuario);
     }
 
     // Retorna todos os usuários cadastrados sem expor a senha
