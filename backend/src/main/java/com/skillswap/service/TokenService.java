@@ -30,4 +30,21 @@ public class TokenService {
                         .toInstant(ZoneOffset.of("-03:00")))
                 .sign(algorithm);
     }
+
+    // Adiciona validação do token recebido e retorna o e-mail do usuário
+    public String validarToken(String token) {
+
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(SECRET);
+
+            return JWT.require(algorithm)
+                    .withIssuer("skillswap")
+                    .build()
+                    .verify(token)
+                    .getSubject();
+
+        } catch (Exception exception) {
+            return "";
+        }
+    }
 }

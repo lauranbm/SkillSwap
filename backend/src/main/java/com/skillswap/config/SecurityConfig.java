@@ -8,6 +8,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.skillswap.security.SecurityFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration // Indica que esta classe possui configurações do Spring
 public class SecurityConfig {
@@ -18,9 +22,15 @@ public class SecurityConfig {
                 // Desativa a proteção CSRF para permitir testes via Postman
                 .csrf(csrf -> csrf.disable())
 
-                // Libera todas as requisições da aplicação
+                // Define quais rotas são públicas e quais exigem autenticação
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll())
+                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/usuarios").permitAll()
+                        .anyRequest().authenticated())
+
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .build();
     }
@@ -35,4 +45,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Autowired
+    private SecurityFilter securityFilter;
 }
