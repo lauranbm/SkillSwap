@@ -7,6 +7,7 @@ import com.skillswap.repository.HabilidadeRepository;
 import com.skillswap.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.skillswap.dto.HabilidadeRespostaDTO;
 
 import java.util.List;
 
@@ -36,9 +37,24 @@ public class HabilidadeService {
         return habilidadeRepository.save(habilidade);
     }
 
-    // Retorna todas as habilidades cadastradas
-    public List<Habilidade> listarTodas() {
-        return habilidadeRepository.findAll();
+    // Converte uma entidade Habilidade em um DTO de resposta
+    public HabilidadeRespostaDTO converterParaRespostaDTO(Habilidade habilidade) {
+        return new HabilidadeRespostaDTO(
+                habilidade.getId(),
+                habilidade.getTitulo(),
+                habilidade.getDescricao(),
+                habilidade.getCategoria(),
+                habilidade.getTrocaDesejada(),
+                habilidade.getUsuario().getId(),
+                habilidade.getUsuario().getNome());
+    }
+
+    // Retorna todas as habilidades cadastradas sem expor dados sensíveis do usuário
+    public List<HabilidadeRespostaDTO> listarTodas() {
+        return habilidadeRepository.findAll()
+                .stream()
+                .map(this::converterParaRespostaDTO)
+                .toList();
     }
 
     // Retorna as habilidades cadastradas por um usuário específico
