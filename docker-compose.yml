@@ -23,7 +23,7 @@ services:
     # Mapeia a porta do container para o computador
     # localhost:3306 -> MySQL dentro do Docker
     ports:
-      - "3306:3306"
+      - "3308:3306"
 
     # Salva os dados do banco mesmo se o container for desligado
     volumes:

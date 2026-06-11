@@ -1,26 +1,88 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Home.css'
 
-// Dados fictícios por enquanto - depois virão do backend
-const trocas = [
-  {
-    id: 1,
-    nome: 'Mario',
-    oferece: 'Inglês',
-    quer: 'Violão, piano, fotografia...',
-    emoji: '👨🏽',
-  },
-  {
-    id: 2,
-    nome: 'Ana',
-    oferece: 'Tatuagem',
-    quer: 'Inglês, Clareamento den...',
-    emoji: '👩🏻',
-  },
-]
+// Interface que define o formato de um usuário vindo do backend
+interface IUsuario {
+  id: number
+  nome: string
+  email: string
+  cidade: string
+  bio: string
+  telefone: string
+}
+
+// Interface que define o formato de uma habilidade vinda do backend
+interface IHabilidade {
+  id: number
+  titulo: string
+  categoria: string
+  descricao: string
+  trocaDesejada: string
+  usuario: {
+    id: number
+    nome: string
+  }
+}
+
+// Interface que junta os dados do usuário com suas habilidades
+// É o formato que os cards da Home precisam para exibir
+interface ICardUsuario {
+  id: number
+  nome: string
+  oferece: string    // habilidade que o usuário tem
+  quer: string       // o que ele quer em troca
+  categoria: string
+}
 
 function HomePage() {
   const navigate = useNavigate()
+
+  // Estado para guardar os cards montados
+  const [cards, setCards] = useState<ICardUsuario[]>([])
+
+  // Estado para controlar o loading
+  const [carregando, setCarregando] = useState<boolean>(true)
+
+  // Estado para erros
+  const [erro, setErro] = useState<string>('')
+
+  // useEffect executa quando o componente carrega
+  // Busca usuários e habilidades ao mesmo tempo com Promise.all
+  useEffect(() => {
+    const buscarDados = async () => {
+      try {
+        // Promise.all faz as duas chamadas ao mesmo tempo
+        // em vez de esperar uma terminar para começar a outra
+        const [resUsuarios, resHabilidades] = await Promise.all([
+          fetch('http://localhost:8080/usuarios'),
+          fetch('http://localhost:8080/habilidades'),
+        ])
+
+        // Converte as duas respostas para JSON
+        const usuarios: IUsuario[] = await resUsuarios.json()
+        const habilidades: IHabilidade[] = await resHabilidades.json()
+
+        // Monta os cards cruzando usuários com suas habilidades
+        // Para cada habilidade, cria um card com os dados do usuário
+        const cardsCalculados: ICardUsuario[] = habilidades.map(hab => ({
+          id: hab.id,
+          nome: hab.usuario.nome,
+          oferece: hab.titulo,
+          quer: hab.trocaDesejada,
+          categoria: hab.categoria,
+        }))
+
+        setCards(cardsCalculados)
+      } catch (error) {
+        setErro('Não foi possível carregar os dados.')
+      } finally {
+        setCarregando(false)
+      }
+    }
+
+    buscarDados()
+  }, [])
 
   return (
     <div className="home-container">
@@ -28,7 +90,7 @@ function HomePage() {
       {/* Cabeçalho */}
       <div className="home-header">
         <div className="home-saudacao">
-          <h1>Olá... ✨</h1> {/* Retornar o nome do usuário ou saudação melhor */}
+          <h1>Olá... ✨</h1>
         </div>
         <div className="home-avatar" onClick={() => navigate('/perfil')}>
           👤
@@ -47,15 +109,36 @@ function HomePage() {
           <button>Ver todas</button>
         </div>
 
-        {/* Lista de cards */}
-        {trocas.map((troca) => (
-          <div className="troca-card" key={troca.id}>
+        {/* Loading enquanto busca os dados */}
+        {carregando && (
+          <p style={{ textAlign: 'center', padding: '20px' }}>
+            Carregando...
+          </p>
+        )}
+
+        {/* Mensagem de erro se a chamada falhar */}
+        {erro && (
+          <p style={{ textAlign: 'center', padding: '20px', color: 'red' }}>
+            {erro}
+          </p>
+        )}
+
+        {/* Mensagem se não houver habilidades cadastradas */}
+        {!carregando && !erro && cards.length === 0 && (
+          <p style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
+            Nenhuma troca disponível ainda.
+          </p>
+        )}
+
+        {/* Lista de cards — um para cada habilidade cadastrada */}
+        {cards.map((card) => (
+          <div className="troca-card" key={card.id}>
             <div className="troca-card-topo">
-              <div className="troca-avatar">{troca.emoji}</div>
+              <div className="troca-avatar">👤</div>
               <div className="troca-info">
-                <h3>{troca.nome} Oferece</h3>
-                <p>{troca.oferece}</p>
-                <span>Tem interesse em: {troca.quer}</span>
+                <h3>{card.nome} Oferece</h3>
+                <p>{card.oferece}</p>
+                <span>Tem interesse em: {card.quer}</span>
               </div>
             </div>
             <button
@@ -66,6 +149,7 @@ function HomePage() {
             </button>
           </div>
         ))}
+
       </div>
 
       {/* Navbar inferior */}
