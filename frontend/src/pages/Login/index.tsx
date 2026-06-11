@@ -1,32 +1,51 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { apiFetch } from '../../services/api'
 import './Login.css'
 
 function LoginPage() {
-  // Guarda o que o usuário digita nos campos
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [erro, setErro] = useState('')
+  const [carregando, setCarregando] = useState(false)
 
   const navigate = useNavigate()
 
-  function handleEntrar() {
-    // Por enquanto só navega para home - depois conecta com o backend
-    navigate('/home')
+  const handleEntrar = async () => {
+
+    if (!email || !senha) {
+      setErro('Preencha o e-mail e a senha!')
+      return
+    }
+
+    setCarregando(true)
+    setErro('')
+
+   try {
+  const dados = await apiFetch('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, senha }),
+  })
+
+  localStorage.setItem('token', dados.token)
+
+  navigate('/home')
+
+    } catch (error: any) {
+    setErro(error.message || 'Erro ao fazer login. Tente novamente.')
+    } finally {
+    setCarregando(false)
+    }
   }
 
   return (
     <div className="login-container">
 
-      {/* Botão voltar */}
-      <button className="login-voltar" onClick={() => navigate(-1)}>
-        ←
-      </button>
+      <button className="login-voltar" onClick={() => navigate(-1)}>←</button>
 
-      {/* Título */}
       <h1 className="login-titulo">Bem-vindo de volta! 💜</h1>
       <p className="login-subtitulo">Entre na sua conta para continuar</p>
 
-      {/* Campo e-mail */}
       <label className="login-label">E-mail</label>
       <input
         className="login-input"
@@ -36,7 +55,6 @@ function LoginPage() {
         onChange={(e) => setEmail(e.target.value)}
       />
 
-      {/* Campo senha */}
       <label className="login-label">Senha</label>
       <input
         className="login-input"
@@ -46,31 +64,33 @@ function LoginPage() {
         onChange={(e) => setSenha(e.target.value)}
       />
 
-      {/* Esqueceu a senha */}
+      {/* Erro só aparece se houver mensagem */}
+      {erro && (
+        <p style={{ color: 'red', fontSize: '0.85rem', marginTop: '8px' }}>
+          {erro}
+        </p>
+      )}
+
       <button className="login-esqueceu">Esqueceu a senha?</button>
 
-      {/* Botão entrar */}
-      <button className="login-botao-principal" onClick={handleEntrar}>
-        Entrar
+      {/* Desabilitado enquanto aguarda o backend */}
+      <button
+        className="login-botao-principal"
+        onClick={handleEntrar}
+        disabled={carregando}
+      >
+        {carregando ? 'Entrando...' : 'Entrar'}
       </button>
 
-      {/* Divisor */}
       <div className="login-divisor">
         <hr /> <span>ou</span> <hr />
       </div>
 
-      {/* Botão Google */}
       <button className="login-botao-google">
-        <img
-          src="https://www.google.com/favicon.ico"
-          width={18}
-          height={18}
-          alt="Google"
-        />
+        <img src="https://www.google.com/favicon.ico" width={18} height={18} alt="Google" />
         Entrar com o Google
       </button>
 
-      {/* Link criar conta */}
       <p className="login-criar-conta">
         Ainda não tem conta?{' '}
         <button onClick={() => navigate('/cadastro')}>Criar conta</button>
