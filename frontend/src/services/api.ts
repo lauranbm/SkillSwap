@@ -1,5 +1,6 @@
 const API_URL = "http://localhost:8080";
 
+//Conexão entre backend e frontend
 export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   const token = localStorage.getItem("token");
 

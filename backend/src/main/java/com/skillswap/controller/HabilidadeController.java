@@ -2,7 +2,6 @@ package com.skillswap.controller;
 
 import com.skillswap.dto.HabilidadeRespostaDTO;
 import com.skillswap.dto.HabilidadeDTO;
-import com.skillswap.dto.HabilidadeRespostaDTO;
 import com.skillswap.model.Habilidade;
 import com.skillswap.service.HabilidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
