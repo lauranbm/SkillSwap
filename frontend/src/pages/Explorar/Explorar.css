@@ -1,153 +1,294 @@
-.explorar-container {
-  display: flex;
-  flex-direction: column;
+.explorar-page {
   min-height: 100vh;
-  background-color: var(--color-background);
-  padding-bottom: 80px; /* espaço para a navbar */
+  background: #faf8ff;
+  color: #181326;
 }
 
-/* Cabeçalho */
-.explorar-header {
+/* Cabeçalho superior da página Explorar */
+.explorar-topbar {
+  width: 100%;
+  padding: 22px 8%;
+  background: #ffffff;
+  border-bottom: 1px solid #eee9ff;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 48px 24px 16px;
-  background-color: var(--color-white);
 }
 
-.explorar-header h1 {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-text);
+.explorar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #6d3df5;
+  font-size: 22px;
+  font-weight: 800;
+  cursor: pointer;
 }
 
-.explorar-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--color-primary-light);
+.explorar-logo-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: #6d3df5;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+}
+
+.explorar-menu {
+  display: flex;
+  gap: 28px;
+}
+
+.explorar-menu button {
+  border: none;
+  background: transparent;
+  color: #555166;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
 }
 
-/* Campo de busca */
-.explorar-busca {
-  padding: 16px 24px;
-  background-color: var(--color-white);
+.explorar-menu button:hover {
+  color: #6d3df5;
 }
 
-.explorar-busca input {
-  width: 100%;
+.explorar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.explorar-btn-link,
+.explorar-btn-primary {
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  border-radius: 14px;
+}
+
+.explorar-btn-link {
+  background: transparent;
+  color: #555166;
   padding: 12px 16px;
-  border: 1.5px solid #e5e7eb;
-  border-radius: var(--border-radius);
+}
+
+.explorar-btn-primary {
+  background: #7c4dff;
+  color: #ffffff;
+  padding: 13px 24px;
+}
+
+.explorar-main {
+  padding: 64px 8% 80px;
+}
+
+.explorar-hero {
+  max-width: 760px;
+  margin-bottom: 34px;
+}
+
+.explorar-tag {
+  display: inline-block;
+  background: #eee7ff;
+  color: #6d3df5;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 800;
   font-size: 14px;
+  margin-bottom: 18px;
+}
+
+.explorar-hero h1 {
+  font-size: 46px;
+  color: #181326;
+  margin-bottom: 14px;
+}
+
+.explorar-hero p {
+  color: #686278;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+/* Card com campo de busca e filtros */
+.explorar-filtros-card {
+  background: #ffffff;
+  border: 1px solid #eee9ff;
+  border-radius: 26px;
+  padding: 24px;
+  margin-bottom: 34px;
+  box-shadow: 0 18px 45px rgba(92, 61, 190, 0.08);
+}
+
+.explorar-filtros-card input {
+  width: 100%;
+  padding: 15px 16px;
+  border: 1.5px solid #e5e0f5;
+  border-radius: 14px;
+  font-size: 15px;
   outline: none;
-  color: var(--color-text);
+  margin-bottom: 18px;
 }
 
-.explorar-busca input:focus {
-  border-color: var(--color-primary);
+.explorar-filtros-card input:focus {
+  border-color: #7c4dff;
 }
 
-/* Filtros de categoria */
 .explorar-filtros {
   display: flex;
-  gap: 8px;
-  padding: 16px 24px;
-  overflow-x: auto; /* scroll horizontal se tiver muitos filtros */
-  background-color: var(--color-white);
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-/* Remove a scrollbar visível nos filtros */
-.explorar-filtros::-webkit-scrollbar {
-  display: none;
-}
-
-.filtro-btn {
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: 1.5px solid #e5e7eb;
-  background-color: var(--color-white);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-text-muted);
+.explorar-filtros button {
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1.5px solid #e5e0f5;
+  background: #ffffff;
+  color: #555166;
+  font-weight: 700;
   cursor: pointer;
-  white-space: nowrap; /* impede quebra de linha */
-  transition: all 0.2s;
 }
 
-/* Filtro selecionado fica roxo */
-.filtro-btn.ativo {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  border-color: var(--color-primary);
+.explorar-filtros button.ativo {
+  background: #7c4dff;
+  color: #ffffff;
+  border-color: #7c4dff;
 }
 
-/* Grid de categorias */
+.explorar-mensagem {
+  background: #ffffff;
+  border: 1px solid #eee9ff;
+  border-radius: 18px;
+  padding: 22px;
+  text-align: center;
+  color: #686278;
+}
+
+.explorar-mensagem.erro {
+  color: #c0392b;
+  background: #fff1f1;
+  border-color: #ffd1d1;
+}
+
+/* Grid dos cards de habilidades */
 .explorar-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* 2 colunas iguais */
-  gap: 16px;
-  padding: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
 }
 
-/* Card de categoria */
-.categoria-card {
-  background-color: var(--color-white);
-  border-radius: var(--border-radius);
-  padding: 20px 16px;
+.habilidade-card {
+  background: #ffffff;
+  border: 1px solid #eee9ff;
+  border-radius: 28px;
+  padding: 26px;
+  box-shadow: 0 18px 45px rgba(92, 61, 190, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  cursor: pointer;
-  transition: transform 0.2s;
+  gap: 18px;
 }
 
-.categoria-card:hover {
-  transform: scale(1.02); /* leve zoom ao passar o mouse */
-}
-
-.categoria-icone {
-  font-size: 28px;
-}
-
-.categoria-card h3 {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.categoria-card span {
-  font-size: 12px;
-  color: var(--color-text-muted);
-}
-
-/* Navbar inferior - igual à Home */
-.explorar-navbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: var(--color-white);
+.habilidade-card-topo {
   display: flex;
-  justify-content: space-around;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.habilidade-categoria {
+  display: inline-block;
+  background: #eee7ff;
+  color: #6d3df5;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.habilidade-card h2 {
+  font-size: 24px;
+  color: #181326;
+}
+
+.habilidade-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: #7c4dff;
+  color: #ffffff;
+  display: flex;
   align-items: center;
-  padding: 12px 0 20px;
-  border-top: 1px solid #e5e7eb;
+  justify-content: center;
+  font-weight: 800;
+  flex-shrink: 0;
 }
 
-.navbar-item {
-  background: none;
+.habilidade-descricao {
+  color: #686278;
+  line-height: 1.6;
+  min-height: 78px;
+}
+
+.habilidade-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.habilidade-info span {
+  color: #8a849a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.habilidade-info strong {
+  color: #181326;
+}
+
+.habilidade-botao {
+  margin-top: auto;
+  width: 100%;
+  padding: 14px;
+  background: #7c4dff;
+  color: #ffffff;
   border: none;
-  font-size: 22px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 800;
   cursor: pointer;
-  color: var(--color-text-muted);
+  transition: 0.2s;
 }
 
-.navbar-item.ativo {
-  color: var(--color-primary);
+.habilidade-botao:hover {
+  background: #6437df;
+}
+
+@media (max-width: 1050px) {
+  .explorar-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .explorar-topbar {
+    flex-direction: column;
+    gap: 18px;
+  }
+}
+
+@media (max-width: 700px) {
+  .explorar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .explorar-hero h1 {
+    font-size: 34px;
+  }
+
+  .explorar-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }

@@ -1,167 +1,196 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Explorar.css'
 
-// Interface que define o formato de uma habilidade vinda do backend
+// Define o formato de uma habilidade recebida do backend
 interface IHabilidade {
   id: number
   titulo: string
   categoria: string
   descricao: string
   trocaDesejada: string
+  usuario?: {
+    id: number
+    nome: string
+  }
 }
-
-// Interface para os cards de categoria agrupados
-interface ICategoria {
-  nome: string
-  icone: string
-  quantidade: number
-}
-
-// Mapa de ícones por categoria
-const icones: Record<string, string> = {
-  'Design':       '🖥️',
-  'Idiomas':      '🌐',
-  'Marketing':    '📣',
-  'Programação':  '💻',
-  'Música':       '🎵',
-  'Outros':       '🔧',
-}
-
-// Lista de filtros disponíveis
-const filtros = ['Todos', 'Design', 'Idiomas', 'Música', 'Programação', 'Marketing']
 
 function ExplorarPage() {
-  const [filtroAtivo, setFiltroAtivo] = useState('Todos')
   const navigate = useNavigate()
 
-  // Estado para guardar as habilidades vindas do backend
   const [habilidades, setHabilidades] = useState<IHabilidade[]>([])
+  const [busca, setBusca] = useState('')
+  const [categoriaAtiva, setCategoriaAtiva] = useState('Todos')
+  const [carregando, setCarregando] = useState(true)
+  const [erro, setErro] = useState('')
 
-  // Estado para controlar se está carregando
-  const [carregando, setCarregando] = useState<boolean>(true)
-
-  // Estado para guardar mensagem de erro se a chamada falhar
-  const [erro, setErro] = useState<string>('')
-
-  // useEffect executa quando o componente carrega na tela
-  // É aqui que fazemos a chamada para o backend
   useEffect(() => {
-    // Função assíncrona para buscar as habilidades
-    const buscarHabilidades = async () => {
+    async function buscarHabilidades() {
       try {
-        // Faz a chamada GET para o backend
         const resposta = await fetch('http://localhost:8080/habilidades')
 
-        // Converte a resposta para JSON
-        const dados = await resposta.json()
+        if (!resposta.ok) {
+          throw new Error('Erro ao carregar habilidades.')
+        }
 
-        // Atualiza o estado com os dados recebidos
+        const dados = await resposta.json()
         setHabilidades(dados)
       } catch (error) {
-        // Se der erro, guarda a mensagem
         setErro('Não foi possível carregar as habilidades.')
       } finally {
-        // Para de mostrar o loading independente do resultado
         setCarregando(false)
       }
     }
 
     buscarHabilidades()
-  }, []) // [] significa que executa só uma vez quando o componente monta
+  }, [])
 
-  // Agrupa as habilidades por categoria e conta quantas tem em cada uma
-  const categorias: ICategoria[] = habilidades.reduce((acc, habilidade) => {
-    const categoriaExistente = acc.find(c => c.nome === habilidade.categoria)
-    if (categoriaExistente) {
-      // Se a categoria já existe, incrementa a quantidade
-      categoriaExistente.quantidade++
-    } else {
-      // Se não existe, cria uma nova categoria
-      acc.push({
-        nome: habilidade.categoria,
-        icone: icones[habilidade.categoria] || '🔧',
-        quantidade: 1,
-      })
+  // Cria a lista de categorias a partir dos dados vindos do backend
+  const categorias = ['Todos', ...new Set(habilidades.map((h) => h.categoria))]
+
+  // Filtra as habilidades por texto digitado e por categoria selecionada
+  const habilidadesFiltradas = habilidades.filter((habilidade) => {
+    const textoBusca = busca.toLowerCase()
+
+    const combinaBusca =
+      habilidade.titulo.toLowerCase().includes(textoBusca) ||
+      habilidade.descricao.toLowerCase().includes(textoBusca) ||
+      habilidade.usuario?.nome.toLowerCase().includes(textoBusca)
+
+    const combinaCategoria =
+      categoriaAtiva === 'Todos' || habilidade.categoria === categoriaAtiva
+
+    return combinaBusca && combinaCategoria
+  })
+
+  function usuarioEstaLogado() {
+    return Boolean(localStorage.getItem('token'))
+  }
+
+  function handleProporTroca() {
+    if (!usuarioEstaLogado()) {
+      navigate('/login')
+      return
     }
-    return acc
-  }, [] as ICategoria[])
 
-  // Filtra as categorias conforme o filtro ativo
-  const categoriasFiltradas = filtroAtivo === 'Todos'
-    ? categorias
-    : categorias.filter(c => c.nome === filtroAtivo)
+    navigate('/match')
+  }
 
   return (
-    <div className="explorar-container">
-
-      {/* Cabeçalho */}
-      <div className="explorar-header">
-        <h1>Explorar skills</h1>
-        <div className="explorar-avatar" onClick={() => navigate('/perfil')}>
-          👤
+    <div className="explorar-page">
+      {/* Cabeçalho da página pública, mantendo a navegação principal do site */}
+      <header className="explorar-topbar">
+        <div className="explorar-logo" onClick={() => navigate('/')}>
+          <span className="explorar-logo-icon">✦</span>
+          <span>SkillSwap</span>
         </div>
-      </div>
 
-      {/* Campo de busca */}
-      <div className="explorar-busca">
-        <input type="text" placeholder="Buscar habilidades ou pessoas..." />
-      </div>
+        <nav className="explorar-menu">
+          <button onClick={() => navigate('/')}>Início</button>
+          <button onClick={() => navigate('/#como-funciona')}>Como funciona</button>
+          <button onClick={() => navigate('/#beneficios')}>Benefícios</button>
+        </nav>
 
-      {/* Filtros */}
-      <div className="explorar-filtros">
-        {filtros.map((filtro) => (
-          <button
-            key={filtro}
-            className={`filtro-btn ${filtro === filtroAtivo ? 'ativo' : ''}`}
-            onClick={() => setFiltroAtivo(filtro)}
-          >
-            {filtro}
+        <div className="explorar-actions">
+          <button className="explorar-btn-link" onClick={() => navigate('/login')}>
+            Entrar
           </button>
-        ))}
-      </div>
-
-      {/* Conteúdo principal */}
-      {carregando ? (
-        // Mostra loading enquanto busca os dados
-        <p style={{ textAlign: 'center', padding: '20px' }}>
-          Carregando habilidades...
-        </p>
-      ) : erro ? (
-        // Mostra erro se a chamada falhar
-        <p style={{ textAlign: 'center', padding: '20px', color: 'red' }}>
-          {erro}
-        </p>
-      ) : categoriasFiltradas.length === 0 ? (
-        // Mostra mensagem se não houver habilidades cadastradas ainda
-        <p style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
-          Nenhuma habilidade cadastrada ainda.
-        </p>
-      ) : (
-        // Mostra os cards de categoria
-        <div className="explorar-grid">
-          {categoriasFiltradas.map((cat) => (
-            <div
-              className="categoria-card"
-              key={cat.nome}
-              onClick={() => navigate('/perfil')}
-            >
-              <span className="categoria-icone">{cat.icone}</span>
-              <h3>{cat.nome}</h3>
-              <span>{cat.quantidade} habilidade(s)</span>
-            </div>
-          ))}
+          <button className="explorar-btn-primary" onClick={() => navigate('/cadastro')}>
+            Criar conta
+          </button>
         </div>
-      )}
+      </header>
 
-      {/* Navbar inferior */}
-      <nav className="explorar-navbar">
-        <button className="navbar-item" onClick={() => navigate('/home')}>🏠</button>
-        <button className="navbar-item ativo">🔍</button>
-        <button className="navbar-item">💬</button>
-        <button className="navbar-item" onClick={() => navigate('/perfil')}>👤</button>
-      </nav>
+      <main className="explorar-main">
+        {/* Apresentação da página */}
+        <section className="explorar-hero">
+          <span className="explorar-tag">Vitrine de habilidades</span>
+          <h1>Explore habilidades disponíveis</h1>
+          <p>
+            Descubra pessoas dispostas a compartilhar conhecimentos e encontre
+            oportunidades para aprender algo novo através da troca.
+          </p>
+        </section>
 
+        {/* Área de busca e filtros */}
+        <section className="explorar-filtros-card">
+          <input
+            type="text"
+            placeholder="Buscar por habilidade, descrição ou pessoa..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
+
+          <div className="explorar-filtros">
+            {categorias.map((categoria) => (
+              <button
+                key={categoria}
+                className={categoria === categoriaAtiva ? 'ativo' : ''}
+                onClick={() => setCategoriaAtiva(categoria)}
+              >
+                {categoria}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Conteúdo carregado do backend */}
+        {carregando && (
+          <p className="explorar-mensagem">Carregando habilidades...</p>
+        )}
+
+        {erro && (
+          <p className="explorar-mensagem erro">{erro}</p>
+        )}
+
+        {!carregando && !erro && habilidadesFiltradas.length === 0 && (
+          <p className="explorar-mensagem">
+            Nenhuma habilidade encontrada.
+          </p>
+        )}
+
+        {!carregando && !erro && habilidadesFiltradas.length > 0 && (
+          <section className="explorar-grid">
+            {habilidadesFiltradas.map((habilidade) => (
+              <article className="habilidade-card" key={habilidade.id}>
+                <div className="habilidade-card-topo">
+                  <div>
+                    <span className="habilidade-categoria">
+                      {habilidade.categoria}
+                    </span>
+                    <h2>{habilidade.titulo}</h2>
+                  </div>
+
+                  <div className="habilidade-avatar">
+                    {habilidade.usuario?.nome?.charAt(0) || 'S'}
+                  </div>
+                </div>
+
+                <p className="habilidade-descricao">
+                  {habilidade.descricao}
+                </p>
+
+                <div className="habilidade-info">
+                  <span>Oferecido por</span>
+                  <strong>{habilidade.usuario?.nome || 'Usuário SkillSwap'}</strong>
+                </div>
+
+                <div className="habilidade-info">
+                  <span>Deseja aprender</span>
+                  <strong>{habilidade.trocaDesejada}</strong>
+                </div>
+
+                <button
+                  className="habilidade-botao"
+                  onClick={handleProporTroca}
+                >
+                  Propor troca
+                </button>
+              </article>
+            ))}
+          </section>
+        )}
+      </main>
     </div>
   )
 }

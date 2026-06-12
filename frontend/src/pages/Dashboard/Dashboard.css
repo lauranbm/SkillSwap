@@ -1,0 +1,126 @@
+.dashboard-page {
+  min-height: 100vh;
+  background: #faf8ff;
+  padding: 48px 8%;
+  color: #181326;
+}
+
+.dashboard-header {
+  background: linear-gradient(135deg, #7c4dff, #9b6dff);
+  color: #ffffff;
+  border-radius: 34px;
+  padding: 44px;
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.dashboard-tag {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.dashboard-header h1 {
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+.dashboard-header p {
+  max-width: 620px;
+  line-height: 1.6;
+  opacity: 0.95;
+}
+
+.dashboard-sair {
+  background: #ffffff;
+  color: #6d3df5;
+  border: none;
+  border-radius: 14px;
+  padding: 13px 22px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-bottom: 30px;
+}
+
+.dashboard-card {
+  background: #ffffff;
+  border: 1px solid #eee9ff;
+  border-radius: 28px;
+  padding: 28px;
+  box-shadow: 0 18px 45px rgba(92, 61, 190, 0.08);
+}
+
+.dashboard-card span {
+  color: #6d3df5;
+  font-weight: 800;
+}
+
+.dashboard-card strong {
+  display: block;
+  font-size: 42px;
+  margin: 14px 0 8px;
+}
+
+.dashboard-card p {
+  color: #686278;
+  line-height: 1.5;
+}
+
+.dashboard-actions {
+  background: #ffffff;
+  border: 1px solid #eee9ff;
+  border-radius: 28px;
+  padding: 30px;
+}
+
+.dashboard-actions h2 {
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.dashboard-action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.dashboard-action-grid button {
+  padding: 18px;
+  border-radius: 16px;
+  border: 1.5px solid #e5e0f5;
+  background: #faf8ff;
+  color: #181326;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.dashboard-action-grid button:hover {
+  background: #7c4dff;
+  color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .dashboard-header,
+  .dashboard-cards,
+  .dashboard-action-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+  }
+}

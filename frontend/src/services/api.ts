@@ -16,7 +16,7 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   });
 
   if (!response.ok) {
-    throw new Error("Erro ao conectar com o backend");
+    throw new Error("E-mail ou senha inválidos, ou backend indisponível");
   }
 
   return response.json();

@@ -1,165 +1,159 @@
-import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Home.css'
 
-// Interface que define o formato de um usuário vindo do backend
-interface IUsuario {
-  id: number
-  nome: string
-  email: string
-  cidade: string
-  bio: string
-  telefone: string
-}
-
-// Interface que define o formato de uma habilidade vinda do backend
-interface IHabilidade {
-  id: number
-  titulo: string
-  categoria: string
-  descricao: string
-  trocaDesejada: string
-  usuario: {
-    id: number
-    nome: string
-  }
-}
-
-// Interface que junta os dados do usuário com suas habilidades
-// É o formato que os cards da Home precisam para exibir
-interface ICardUsuario {
-  id: number
-  nome: string
-  oferece: string    // habilidade que o usuário tem
-  quer: string       // o que ele quer em troca
-  categoria: string
-}
-
 function HomePage() {
+  // useNavigate permite trocar de página quando o usuário clicar nos botões
   const navigate = useNavigate()
 
-  // Estado para guardar os cards montados
-  const [cards, setCards] = useState<ICardUsuario[]>([])
-
-  // Estado para controlar o loading
-  const [carregando, setCarregando] = useState<boolean>(true)
-
-  // Estado para erros
-  const [erro, setErro] = useState<string>('')
-
-  // useEffect executa quando o componente carrega
-  // Busca usuários e habilidades ao mesmo tempo com Promise.all
-  useEffect(() => {
-    const buscarDados = async () => {
-      try {
-        // Promise.all faz as duas chamadas ao mesmo tempo
-        // em vez de esperar uma terminar para começar a outra
-        const [resUsuarios, resHabilidades] = await Promise.all([
-          fetch('http://localhost:8080/usuarios'),
-          fetch('http://localhost:8080/habilidades'),
-        ])
-
-        // Converte as duas respostas para JSON
-        const usuarios: IUsuario[] = await resUsuarios.json()
-        const habilidades: IHabilidade[] = await resHabilidades.json()
-
-        // Monta os cards cruzando usuários com suas habilidades
-        // Para cada habilidade, cria um card com os dados do usuário
-        const cardsCalculados: ICardUsuario[] = habilidades.map(hab => ({
-          id: hab.id,
-          nome: hab.usuario.nome,
-          oferece: hab.titulo,
-          quer: hab.trocaDesejada,
-          categoria: hab.categoria,
-        }))
-
-        setCards(cardsCalculados)
-      } catch (error) {
-        setErro('Não foi possível carregar os dados.')
-      } finally {
-        setCarregando(false)
-      }
-    }
-
-    buscarDados()
-  }, [])
-
   return (
-    <div className="home-container">
+    <div className="home-page">
 
-      {/* Cabeçalho */}
-      <div className="home-header">
-        <div className="home-saudacao">
-          <h1>Olá... ✨</h1>
-        </div>
-        <div className="home-avatar" onClick={() => navigate('/perfil')}>
-          👤
-        </div>
-      </div>
-
-      {/* Campo de busca */}
-      <div className="home-busca">
-        <input type="text" placeholder="Buscar habilidades ou pessoas..." />
-      </div>
-
-      {/* Seção de trocas */}
-      <div className="home-secao">
-        <div className="home-secao-header">
-          <h2>Trocas para você</h2>
-          <button>Ver todas</button>
+      {/* Cabeçalho principal do site com logo, menu e botões de acesso */}
+      <header className="home-header">
+        <div className="home-logo">
+          <span className="home-logo-icon">✦</span>
+          <span>SkillSwap</span>
         </div>
 
-        {/* Loading enquanto busca os dados */}
-        {carregando && (
-          <p style={{ textAlign: 'center', padding: '20px' }}>
-            Carregando...
-          </p>
-        )}
+        <nav className="home-menu">
+          <a href="#inicio">Início</a>
+          <a href="#como-funciona">Como funciona</a>
+          <a href="#beneficios">Benefícios</a>
+        </nav>
 
-        {/* Mensagem de erro se a chamada falhar */}
-        {erro && (
-          <p style={{ textAlign: 'center', padding: '20px', color: 'red' }}>
-            {erro}
-          </p>
-        )}
+        <div className="home-actions">
+          <button className="btn-link" onClick={() => navigate('/login')}>
+            Entrar
+          </button>
 
-        {/* Mensagem se não houver habilidades cadastradas */}
-        {!carregando && !erro && cards.length === 0 && (
-          <p style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
-            Nenhuma troca disponível ainda.
-          </p>
-        )}
+          <button className="btn-primary" onClick={() => navigate('/cadastro')}>
+            Criar conta
+          </button>
+        </div>
+      </header>
 
-        {/* Lista de cards — um para cada habilidade cadastrada */}
-        {cards.map((card) => (
-          <div className="troca-card" key={card.id}>
-            <div className="troca-card-topo">
-              <div className="troca-avatar">👤</div>
-              <div className="troca-info">
-                <h3>{card.nome} Oferece</h3>
-                <p>{card.oferece}</p>
-                <span>Tem interesse em: {card.quer}</span>
-              </div>
+      {/* Primeira seção da página: apresenta a proposta principal do sistema */}
+      <main>
+        <section className="hero-section" id="inicio">
+          <div className="hero-text">
+            <span className="hero-tag">Aprenda sem gastar dinheiro</span>
+
+            <h1>
+              Troque habilidades.
+              <br />
+              Aprenda com pessoas reais.
+            </h1>
+
+            <p>
+              O SkillSwap conecta pessoas que querem ensinar e aprender através
+              da troca de conhecimentos, serviços e experiências.
+            </p>
+
+            <div className="hero-buttons">
+              <button className="btn-primary" onClick={() => navigate('/cadastro')}>
+                Começar agora
+              </button>
+
+              <button className="btn-secondary" onClick={() => navigate('/explorar')}>
+                Explorar habilidades
+              </button>
             </div>
-            <button
-              className="troca-botao"
-              onClick={() => navigate('/match')}
-            >
-              Trocar habilidades
-            </button>
           </div>
-        ))}
 
-      </div>
+          {/* Ilustração reaproveitada do antigo onboarding */}
+          <div className="hero-image-card">
+            <img
+              src="/src/assets/onboarding2.svg"
+              alt="Pessoa aprendendo uma nova habilidade"
+            />
+          </div>
+        </section>
 
-      {/* Navbar inferior */}
-      <nav className="home-navbar">
-        <button className="navbar-item ativo">🏠</button>
-        <button className="navbar-item" onClick={() => navigate('/explorar')}>🔍</button>
-        <button className="navbar-item">💬</button>
-        <button className="navbar-item" onClick={() => navigate('/perfil')}>👤</button>
-      </nav>
+        {/* Seção que reaproveita as três ideias principais do protótipo mobile */}
+        <section className="how-section" id="como-funciona">
+          <div className="section-title">
+            <span>Como funciona</span>
+            <h2>Uma plataforma simples para trocar conhecimento</h2>
+            <p>
+              A ideia do sistema é facilitar encontros entre pessoas que têm
+              algo para ensinar e algo que desejam aprender.
+            </p>
+          </div>
 
+          <div className="how-cards">
+            <article className="how-card">
+              <img src="/src/assets/onboarding1.svg" alt="Compartilhar habilidades" />
+              <h3>Compartilhe o que você sabe</h3>
+              <p>Cadastre habilidades que você domina e inspire outras pessoas.</p>
+            </article>
+
+            <article className="how-card">
+              <img src="/src/assets/onboarding2.svg" alt="Aprender novas habilidades" />
+              <h3>Aprenda gratuitamente</h3>
+              <p>Troque conhecimento por conhecimento, sem envolver dinheiro.</p>
+            </article>
+
+            <article className="how-card">
+              <img src="/src/assets/onboarding3.svg" alt="Conectar pessoas" />
+              <h3>Conecte-se com pessoas reais</h3>
+              <p>Encontre usuários com interesses compatíveis e combine uma troca.</p>
+            </article>
+          </div>
+        </section>
+
+        {/* Seção de benefícios do projeto */}
+        <section className="benefits-section" id="beneficios">
+          <div className="section-title">
+            <span>Benefícios</span>
+            <h2>Por que escolher o SkillSwap?</h2>
+            <p>
+              O SkillSwap foi criado para tornar o aprendizado mais acessível,
+              incentivar a troca de conhecimentos e aproximar pessoas por meio da colaboração.
+            </p>
+          </div>
+
+          <div className="benefits-cards">
+            <article className="benefit-card">
+              <h3>Troca de conhecimentos</h3>
+              <p>
+                A plataforma facilita o encontro entre pessoas que desejam ensinar
+                o que sabem e aprender novas habilidades.
+              </p>
+            </article>
+
+            <article className="benefit-card">
+              <h3>Conexões humanas</h3>
+              <p>
+                O sistema incentiva relações baseadas em colaboração, confiança e
+                interesses em comum.
+              </p>
+            </article>
+
+            <article className="benefit-card">
+              <h3>Aprenda sem gastar dinheiro</h3>
+              <p>
+                No SkillSwap, o conhecimento funciona como moeda de troca, permitindo
+                aprender sem custos financeiros.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        {/* Seção final para incentivar o cadastro do usuário */}
+        <section className="cta-section">
+          <div>
+            <h2>Pronto para fazer sua primeira troca?</h2>
+            <p>
+              Crie sua conta, cadastre suas habilidades e encontre pessoas com
+              interesses parecidos com os seus.
+            </p>
+          </div>
+
+          <button className="btn-white" onClick={() => navigate('/cadastro')}>
+            Criar conta gratuita
+          </button>
+        </section>
+      </main>
     </div>
   )
 }
