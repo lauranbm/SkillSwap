@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../../services/api'
 import { useNavigate } from 'react-router-dom'
 import './Explorar.css'
 
@@ -9,10 +10,8 @@ interface IHabilidade {
   categoria: string
   descricao: string
   trocaDesejada: string
-  usuario?: {
-    id: number
-    nome: string
-  }
+  usuarioId: number
+  usuarioNome: string
 }
 
 function ExplorarPage() {
@@ -27,13 +26,8 @@ function ExplorarPage() {
   useEffect(() => {
     async function buscarHabilidades() {
       try {
-        const resposta = await fetch('http://localhost:8080/habilidades')
-
-        if (!resposta.ok) {
-          throw new Error('Erro ao carregar habilidades.')
-        }
-
-        const dados = await resposta.json()
+        // Usa apiFetch para enviar o token JWT quando o usuário estiver logado
+        const dados = await apiFetch('/habilidades')
         setHabilidades(dados)
       } catch (error) {
         setErro('Não foi possível carregar as habilidades.')
@@ -55,7 +49,7 @@ function ExplorarPage() {
     const combinaBusca =
       habilidade.titulo.toLowerCase().includes(textoBusca) ||
       habilidade.descricao.toLowerCase().includes(textoBusca) ||
-      habilidade.usuario?.nome.toLowerCase().includes(textoBusca)
+      habilidade.usuarioNome.toLowerCase().includes(textoBusca)
 
     const combinaCategoria =
       categoriaAtiva === 'Todos' || habilidade.categoria === categoriaAtiva
@@ -67,19 +61,83 @@ function ExplorarPage() {
     return Boolean(localStorage.getItem('token'))
   }
 
-  function handleProporTroca() {
+  // Define para onde o botão de voltar deve levar
+  function voltar() {
+    if (usuarioEstaLogado()) {
+      navigate('/dashboard')
+    } else {
+      navigate('/')
+    }
+  }
+
+  async function handleProporTroca(habilidade: IHabilidade) {
     if (!usuarioEstaLogado()) {
       navigate('/login')
       return
     }
 
-    navigate('/match')
+    try {
+      const token = localStorage.getItem('token')
+
+      if (!token) {
+        navigate('/login')
+        return
+      }
+
+      // Recupera o e-mail do usuário logado a partir do token JWT
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      const emailLogado = payload.sub
+
+      // Busca o usuário logado para descobrir o ID dele
+      const usuarios = await apiFetch('/usuarios')
+      const usuarioLogado = usuarios.find((usuario: any) => usuario.email === emailLogado)
+
+      if (!usuarioLogado) {
+        setErro('Usuário logado não encontrado.')
+        return
+      }
+
+      // Busca as habilidades cadastradas pelo usuário logado
+      const minhasHabilidades = await apiFetch(`/habilidades/usuario/${usuarioLogado.id}`)
+
+      if (minhasHabilidades.length === 0) {
+        setErro('Cadastre pelo menos uma habilidade antes de propor uma troca.')
+        return
+      }
+
+      // Para manter simples, usamos a primeira habilidade cadastrada pelo usuário logado
+      const habilidadeOferecida = minhasHabilidades[0]
+
+      // Cria uma troca real no backend. O backend define o status inicial como PENDENTE.
+      const trocaCriada = await apiFetch('/trocas', {
+        method: 'POST',
+        body: JSON.stringify({
+          solicitanteId: usuarioLogado.id,
+          destinatarioId: habilidade.usuarioId,
+          habilidadeOferecidaId: habilidadeOferecida.id,
+          habilidadeDesejadaId: habilidade.id,
+        }),
+      })
+
+      // Guarda a troca criada para a página Match exibir o status e os dados da proposta
+      localStorage.setItem('trocaCriada', JSON.stringify(trocaCriada))
+
+      navigate('/match')
+    } catch (error) {
+      setErro('Erro ao propor troca. Tente novamente.')
+    }
   }
 
   return (
     <div className="explorar-page">
       {/* Cabeçalho da página pública, mantendo a navegação principal do site */}
       <header className="explorar-topbar">
+        <button
+          className="explorar-voltar"
+          onClick={voltar}
+        >
+          ← Voltar
+        </button>
         <div className="explorar-logo" onClick={() => navigate('/')}>
           <span className="explorar-logo-icon">✦</span>
           <span>SkillSwap</span>
@@ -92,12 +150,42 @@ function ExplorarPage() {
         </nav>
 
         <div className="explorar-actions">
-          <button className="explorar-btn-link" onClick={() => navigate('/login')}>
-            Entrar
-          </button>
-          <button className="explorar-btn-primary" onClick={() => navigate('/cadastro')}>
-            Criar conta
-          </button>
+          {usuarioEstaLogado() ? (
+            <>
+              <button
+                className="explorar-btn-link"
+                onClick={() => navigate('/perfil')}
+              >
+                Meu perfil
+              </button>
+
+              <button
+                className="explorar-btn-primary"
+                onClick={() => {
+                  localStorage.removeItem('token')
+                  navigate('/')
+                }}
+              >
+                Sair
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="explorar-btn-link"
+                onClick={() => navigate('/login')}
+              >
+                Entrar
+              </button>
+
+              <button
+                className="explorar-btn-primary"
+                onClick={() => navigate('/cadastro')}
+              >
+                Criar conta
+              </button>
+            </>
+          )}
         </div>
       </header>
 
@@ -162,7 +250,7 @@ function ExplorarPage() {
                   </div>
 
                   <div className="habilidade-avatar">
-                    {habilidade.usuario?.nome?.charAt(0) || 'S'}
+                    {habilidade.usuarioNome?.charAt(0).toUpperCase() || '?'}
                   </div>
                 </div>
 
@@ -172,7 +260,7 @@ function ExplorarPage() {
 
                 <div className="habilidade-info">
                   <span>Oferecido por</span>
-                  <strong>{habilidade.usuario?.nome || 'Usuário SkillSwap'}</strong>
+                  <strong>{habilidade.usuarioNome || 'Usuário não informado'}</strong>
                 </div>
 
                 <div className="habilidade-info">
@@ -182,7 +270,7 @@ function ExplorarPage() {
 
                 <button
                   className="habilidade-botao"
-                  onClick={handleProporTroca}
+                  onClick={() => handleProporTroca(habilidade)}
                 >
                   Propor troca
                 </button>

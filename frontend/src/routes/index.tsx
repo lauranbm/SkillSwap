@@ -7,6 +7,7 @@ import PerfilPage from '../pages/Perfil'
 import MatchPage from '../pages/Match'
 import CadastroPage from '../pages/Cadastro'
 import DashboardPage from '../pages/Dashboard'
+import MinhasHabilidadesPage from '../pages/MinhasHabilidades'
 
 function AppRoutes() {
   return (
@@ -22,6 +23,7 @@ function AppRoutes() {
         <Route path="/match" element={<MatchPage />} />
         <Route path="/cadastro" element={<CadastroPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/minhas-habilidades" element={<MinhasHabilidadesPage />} />
       </Routes>
     </BrowserRouter>
   )

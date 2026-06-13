@@ -267,6 +267,22 @@
   background: #6437df;
 }
 
+/* Botão de voltar */
+.explorar-voltar {
+  background: #ffffff;
+  color: #6d3df5;
+  border: 1px solid #eee9ff;
+  border-radius: 14px;
+  padding: 13px 20px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.explorar-voltar:hover {
+  background: #faf8ff;
+}
+
 @media (max-width: 1050px) {
   .explorar-grid {
     grid-template-columns: repeat(2, 1fr);

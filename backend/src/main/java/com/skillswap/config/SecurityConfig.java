@@ -15,6 +15,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.skillswap.security.SecurityFilter;
+import org.springframework.http.HttpMethod;
 
 import java.util.List;
 
@@ -38,11 +39,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/usuarios").permitAll()
-                        .anyRequest().authenticated()
-                )
+
+                        // Permite que visitantes vejam a vitrine de habilidades sem login
+                        .requestMatchers(HttpMethod.GET, "/habilidades").permitAll()
+
+                        .anyRequest().authenticated())
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -53,9 +56,8 @@ public class SecurityConfig {
 
         // Permite requisições vindas do frontend local
         config.setAllowedOrigins(List.of(
-            "http://localhost:5173",
-            "http://localhost:5174"
-        ));
+                "http://localhost:5173",
+                "http://localhost:5174"));
 
         // Permite os métodos HTTP que o frontend vai usar
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
