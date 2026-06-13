@@ -122,7 +122,7 @@ SkillSwap/
 ## Integrantes
 
 * Laura Neves Bittencourt Moreira
-* Aline Tiburcio
+* Aline de Oliveira Tiburcio Souza
 
 ---
 
