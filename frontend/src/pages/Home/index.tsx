@@ -60,7 +60,7 @@ function HomePage() {
             </div>
           </div>
 
-          {/* Ilustração reaproveitada do antigo onboarding */}
+          {/* Ilustração */}
           <div className="hero-image-card">
             <img
               src="/src/assets/onboarding2.svg"
